@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
+import multer from 'multer';
+import uploadConfig from '../config/upload';
 
 import Recipe from '../models/Recipe';
 
@@ -7,6 +9,8 @@ import recipesView from '../views/recipes_view';
 
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 import CreateRecipeService from '../services/CreateRecipeService';
+
+const upload = multer(uploadConfig);
 
 const recipesRouter = Router();
 
@@ -22,15 +26,19 @@ recipesRouter.get('/', async (request, response) => {
 
 recipesRouter.use(ensureAuthenticated);
 
-recipesRouter.post('/', async (request, response) => {
+recipesRouter.post('/', upload.single('image'), async (request, response) => {
   try {
     const { id } = request.user;
-    const { name, description, difficulty, time } = request.body;
+    const { filename } = request.file;
+    const { name, description, difficulty, time } = JSON.parse(
+      request.body.body,
+    );
 
     const createRecipe = new CreateRecipeService();
 
     const recipe = await createRecipe.execute({
       user: id,
+      image: filename,
       name,
       description,
       difficulty,

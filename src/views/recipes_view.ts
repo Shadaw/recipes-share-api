@@ -9,6 +9,10 @@ export default {
       description: recipe.description,
       difficulty: recipe.difficulty,
       time: recipe.time,
+      image:
+        process.env.NODE_ENV === 'production'
+          ? `https://api-recipes-share.herokuapp.com/files/${recipe.image}`
+          : `http://localhost:3333/files/${recipe.image}`,
       user: usersView.render(recipe.user),
       updated_at: recipe.updated_at,
       created_at: recipe.created_at,
