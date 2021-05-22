@@ -5,6 +5,7 @@ import Recipe from '../models/Recipe';
 interface Request {
   user: string;
   name: string;
+  image: string;
   description: string;
   difficulty: string;
   time: number;
@@ -14,6 +15,7 @@ export default class CreateRecipeService {
   public async execute({
     user,
     name,
+    image,
     description,
     difficulty,
     time,
@@ -22,6 +24,7 @@ export default class CreateRecipeService {
 
     const recipe = recipesRepository.create({
       user_id: user,
+      image,
       name,
       description,
       difficulty,
