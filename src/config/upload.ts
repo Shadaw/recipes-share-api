@@ -32,5 +32,6 @@ const storageTypes = {
 
 export default {
   directory: tmpFolder,
-  storage: storageTypes[process.env.STORAGE_TYPE],
+  storage:
+    process.env.STORAGE_TYPE === 's3' ? storageTypes.s3 : storageTypes.local,
 };
