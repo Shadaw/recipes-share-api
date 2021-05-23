@@ -29,7 +29,7 @@ recipesRouter.use(ensureAuthenticated);
 recipesRouter.post('/', upload.single('image'), async (request, response) => {
   try {
     const { id } = request.user;
-    const { filename } = request.file;
+    const { key } = request.file;
     const { name, description, difficulty, time } = JSON.parse(
       request.body.body,
     );
@@ -38,7 +38,7 @@ recipesRouter.post('/', upload.single('image'), async (request, response) => {
 
     const recipe = await createRecipe.execute({
       user: id,
-      image: filename,
+      image: key,
       name,
       description,
       difficulty,

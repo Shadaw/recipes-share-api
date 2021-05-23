@@ -11,7 +11,7 @@ export default {
       time: recipe.time,
       image:
         process.env.NODE_ENV === 'production'
-          ? `https://api-recipes-share.herokuapp.com/files/${recipe.image}`
+          ? `https://recipes-share.s3-sa-east-1.amazonaws.com/${recipe.image}`
           : `http://localhost:3333/files/${recipe.image}`,
       user: usersView.render(recipe.user),
       updated_at: recipe.updated_at,
