@@ -30,9 +30,8 @@ recipesRouter.post('/', upload.single('image'), async (request, response) => {
   try {
     const { id } = request.user;
     const { key } = request.file;
-    const { name, description, difficulty, time } = JSON.parse(
-      request.body.body,
-    );
+
+    const { name, description, difficulty, time } = request.body;
 
     const createRecipe = new CreateRecipeService();
 
