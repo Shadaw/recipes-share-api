@@ -11,10 +11,12 @@ import CreateCommentService from '../services/CreateCommentService';
 const commentsRouter = Router();
 
 commentsRouter.get('/:recipe_id', async (request, response) => {
+  const { recipe_id } = request.params;
   const commentsRepository = getRepository(Comment);
 
   const comments = await commentsRepository.find({
     relations: ['user'],
+    where: { recipe_id },
   });
 
   return response.json(commentsView.renderMany(comments));
