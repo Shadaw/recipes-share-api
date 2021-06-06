@@ -17,11 +17,36 @@ const recipesRouter = Router();
 recipesRouter.get('/', async (request, response) => {
   const recipesRepository = getRepository(Recipe);
 
+  if (typeof request.query.onlyid !== 'undefined') {
+    const recipes = await recipesRepository.find({
+      select: ['id'],
+      relations: ['user'],
+    });
+
+    return response.json(recipes.map(recipe => ({ id: recipe.id })));
+  }
+
   const recipes = await recipesRepository.find({
     relations: ['user'],
   });
 
   return response.json(recipesView.renderMany(recipes));
+});
+
+recipesRouter.get('/:id', async (request, response) => {
+  try {
+    const { id } = request.params;
+    const recipesRepository = getRepository(Recipe);
+
+    const recipe = await recipesRepository.findOneOrFail({
+      where: { id },
+      relations: ['user'],
+    });
+
+    return response.json(recipesView.render(recipe));
+  } catch (err) {
+    return response.status(400).json({ error: err.message });
+  }
 });
 
 recipesRouter.use(ensureAuthenticated);
