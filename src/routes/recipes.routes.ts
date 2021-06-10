@@ -26,6 +26,17 @@ recipesRouter.get('/', async (request, response) => {
     return response.json(recipes.map(recipe => ({ id: recipe.id })));
   }
 
+  if (typeof request.query.by !== 'undefined') {
+    const { by: user_id } = request.query;
+
+    const recipes = await recipesRepository.find({
+      where: { user_id },
+      relations: ['user'],
+    });
+
+    return response.json(recipesView.renderMany(recipes));
+  }
+
   const recipes = await recipesRepository.find({
     relations: ['user'],
   });
