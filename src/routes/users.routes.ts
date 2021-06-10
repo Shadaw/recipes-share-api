@@ -43,21 +43,15 @@ usersRouter.get('/', async (request, response) => {
       where: { user_id: id },
     });
 
-    let commentsLenth = 0;
-
     const recipesId = recipes.map(recipe => recipe.id);
 
-    recipesId.forEach(async recipe_id => {
-      const comments = await commentsRepository.find({
-        where: { recipe_id },
-      });
-
-      commentsLenth += comments.length;
-    });
+    const comments = await commentsRepository.find();
 
     return response.json({
       recipes: recipesId.length,
-      comments: commentsLenth,
+      comments: comments.filter(comment =>
+        recipesId.toString().includes(comment.recipe_id),
+      ).length,
     });
   } catch (err) {
     return response.status(400).json({ error: err.message });
