@@ -9,6 +9,7 @@ import recipesView from '../views/recipes_view';
 
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 import CreateRecipeService from '../services/CreateRecipeService';
+import UpdateRecipeService from '../services/UpdateRecipeService';
 
 const upload = multer(uploadConfig);
 
@@ -73,6 +74,30 @@ recipesRouter.post('/', upload.single('image'), async (request, response) => {
 
     const recipe = await createRecipe.execute({
       user: id,
+      image: key,
+      name,
+      description,
+      difficulty,
+      time,
+    });
+
+    return response.json(recipe);
+  } catch (err) {
+    return response.status(400).json({ error: err.message });
+  }
+});
+
+recipesRouter.put('/:id', upload.single('image'), async (request, response) => {
+  try {
+    const { id } = request.params;
+    const { key } = request.file;
+
+    const { name, description, difficulty, time } = request.body;
+
+    const createRecipe = new UpdateRecipeService();
+
+    const recipe = await createRecipe.execute({
+      id,
       image: key,
       name,
       description,
